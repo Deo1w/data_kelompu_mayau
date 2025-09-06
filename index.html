@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input[type="text"], input[type="password"] { width: calc(100% - 20px); padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="errorMessage" class="error"></p>
+    </div>
+
+    <script>
+        const correctUsername = "kelompu@village.ac.id";
+        const correctPassword = "123.@KeLoMpU@.321";
+
+        function login() {
+            const usernameInput = document.getElementById("username").value;
+            const passwordInput = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (usernameInput === correctUsername && passwordInput === correctPassword) {
+                // Simpan status login di sessionStorage agar bisa diakses di halaman lain
+                sessionStorage.setItem('isLoggedIn', 'true');
+                window.location.href = "data_entry.html"; // Redirect ke halaman pengisian data
+            } else {
+                errorMessage.textContent = "Username atau password salah.";
+            }
+        }
+    </script>
+</body>
+</html>

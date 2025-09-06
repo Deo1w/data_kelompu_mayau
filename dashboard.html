@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; background-color: #f4f4f4; padding: 20px; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 600px; max-width: 100%; text-align: center; margin-bottom: 20px; }
+        input[type="text"] { width: calc(100% - 20px); padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .user-list { text-align: left; margin-top: 20px; }
+        .user-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .user-item:hover { background-color: #f9f9f9; }
+        .user-detail { margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; text-align: left; }
+        .user-detail p { margin: 5px 0; }
+        button { background-color: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #c82333; }
+        .logout { float: right; margin-top: -5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="logout" onclick="logout()">Logout</button>
+        <h2>Beranda Pengguna</h2>
+        <input type="text" id="searchName" onkeyup="filterUsers()" placeholder="Cari nama...">
+        
+        <div class="user-list" id="userList">
+            <!-- Daftar pengguna akan dimuat di sini -->
+        </div>
+
+        <div class="user-detail" id="userDetail">
+            <!-- Detail pengguna yang dipilih akan ditampilkan di sini -->
+            <p>Klik nama pengguna untuk melihat detail.</p>
+        </div>
+    </div>
+
+    <script>
+        // Periksa apakah pengguna sudah login
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = "index.html"; // Jika belum, kembalikan ke halaman login
+        }
+
+        let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+        function displayUsers(usersToDisplay) {
+            const userList = document.getElementById("userList");
+            userList.innerHTML = ''; // Kosongkan daftar sebelum mengisi ulang
+
+            if (usersToDisplay.length === 0) {
+                userList.innerHTML = '<p>Belum ada pengguna terdaftar.</p>';
+                return;
+            }
+
+            usersToDisplay.forEach(user => {
+                const userItem = document.createElement("div");
+                userItem.className = "user-item";
+                userItem.textContent = user.namaLengkap;
+                userItem.onclick = () => showUserDetail(user);
+                userList.appendChild(userItem);
+            });
+        }
+
+        function showUserDetail(user) {
+            const userDetail = document.getElementById("userDetail");
+            userDetail.innerHTML = `
+                <h3>Detail Pengguna</h3>
+                <p><strong>Nama Lengkap:</strong> ${user.namaLengkap}</p>
+                <p><strong>Tempat Lahir:</strong> ${user.tempatLahir}</p>
+                <p><strong>Tanggal Lahir:</strong> ${user.tanggalLahir}</p>
+            `;
+        }
+
+        function filterUsers() {
+            const searchInput = document.getElementById("searchName").value.toLowerCase();
+            const filtered = registeredUsers.filter(user => 
+                user.namaLengkap.toLowerCase().includes(searchInput)
+            );
+            displayUsers(filtered);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn'); // Hapus status login
+            localStorage.removeItem('currentUserName'); // Hapus nama pengguna saat ini
+            window.location.href = "index.html";
+        }
+
+        // Tampilkan semua pengguna saat halaman dimuat
+        displayUsers(registeredUsers);
+    </script>
+</body>
+</html>

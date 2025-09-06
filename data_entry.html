@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengisian Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        label { display: block; text-align: left; margin-top: 10px; font-weight: bold; }
+        input[type="text"] { width: calc(100% - 20px); padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pengisian Data Pengguna</h2>
+        <form id="dataForm">
+            <label for="namaLengkap">Nama Lengkap:</label>
+            <input type="text" id="namaLengkap" name="namaLengkap" required>
+
+            <label for="tempatLahir">Tempat Lahir:</label>
+            <input type="text" id="tempatLahir" name="tempatLahir" required>
+
+            <label for="tanggalLahir">Tanggal Lahir:</label>
+            <input type="date" id="tanggalLahir" name="tanggalLahir" required>
+
+            <button type="submit">Simpan Data</button>
+            <p id="errorMessage" class="error"></p>
+        </form>
+    </div>
+
+    <script>
+        // Periksa apakah pengguna sudah login
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = "index.html"; // Jika belum, kembalikan ke halaman login
+        }
+
+        document.getElementById("dataForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah form submit secara default
+
+            const namaLengkap = document.getElementById("namaLengkap").value;
+            const tempatLahir = document.getElementById("tempatLahir").value;
+            const tanggalLahir = document.getElementById("tanggalLahir").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (namaLengkap === "" || tempatLahir === "" || tanggalLahir === "") {
+                errorMessage.textContent = "Semua kolom wajib diisi!";
+                return;
+            }
+
+            // Di sini Anda akan mengirim data ke backend untuk disimpan
+            // Untuk demo ini, kita akan menyimpannya di localStorage (hanya di browser user)
+            const userData = {
+                namaLengkap: namaLengkap,
+                tempatLahir: tempatLahir,
+                tanggalLahir: tanggalLahir
+            };
+
+            // Ambil data yang sudah ada atau buat array baru
+            let usersData = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+            // Tambahkan user baru
+            usersData.push(userData);
+            // Simpan kembali ke localStorage
+            localStorage.setItem('registeredUsers', JSON.stringify(usersData));
+
+            // Simpan nama pengguna saat ini untuk verifikasi login selanjutnya
+            localStorage.setItem('currentUserName', namaLengkap);
+            
+            alert("Data berhasil disimpan!");
+            window.location.href = "dashboard.html"; // Redirect ke halaman beranda
+        });
+    </script>
+</body>
+</html>
